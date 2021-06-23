@@ -12,7 +12,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import EditTwoToneIcon from "@material-ui/icons/EditTwoTone";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-import Application from "./Application";
+import Status from "./Status";
 import AdminServices from "../../services/admin.services";
 
 function getModalStyle() {
@@ -26,38 +26,37 @@ function getModalStyle() {
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: "absolute",
-    width: "80vw",
-    height: "100vh",
+    width: "60vw",
+    height: "60vh",
     backgroundColor: theme.palette.background.paper,
     border: "1px solid #000",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(0, 4, 5),
-    overflow: "auto",
+    padding: theme.spacing(2, 4, 3),
   },
 }));
 
-function ListApplications({ isConnected }) {
+function ListStatuses() {
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
-  const [applications, setApplications] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [application, setApplication] = useState({});
+  const [title, setTitle] = useState("");
+  const [arTitle, setArTitle] = useState("");
   const [id, setId] = useState("");
   useEffect(() => {
-    async function fetchApplications() {
-      let applications = await AdminServices.applicationsServices.fetchAll();
-      setApplications(applications);
+    async function fetchStatuses() {
+      let newStatuses = await AdminServices.statusesServices.fetchAll();
+      if (newStatuses.length !== statuses.length) setStatuses(newStatuses);
     }
-
-    fetchApplications();
-  }, []);
+    fetchStatuses();
+  }, [statuses]);
 
   const columns = [
     { field: "_id", flex: 1, hide: true },
     { field: "id", headerName: "ID" },
-    { field: "name", headerName: "Name", flex: 0.5 },
-    { field: "email", headerName: "Email", flex: 0.5 },
+    { field: "title", headerName: "Title", flex: 0.5 },
+    { field: "arTitle", headerName: "الاسم", flex: 0.5 },
     {
       field: "action",
       headerName: " ",
@@ -71,9 +70,8 @@ function ListApplications({ isConnected }) {
             size="small"
             style={{ marginLeft: 16 }}
             onClick={() => {
-              setApplication(
-                applications.find((app) => app._id === params.row._id)
-              );
+              setTitle(params.row.title);
+              setArTitle(params.row.arTitle);
               setId(params.row._id);
               handleOpen(true);
             }}
@@ -99,13 +97,13 @@ function ListApplications({ isConnected }) {
     },
   ];
   const rows = [];
-  if (applications) {
-    applications.forEach((application, index) => {
+  if (statuses) {
+    statuses.forEach((area, index) => {
       rows.push({
-        id: index + 1,
-        _id: application._id,
-        name: application.name,
-        email: application.email,
+        id: index,
+        _id: area._id,
+        title: area.title,
+        arTitle: area.arTitle,
         action: (
           <Button variant="contained" color="primary">
             Primary
@@ -121,26 +119,27 @@ function ListApplications({ isConnected }) {
 
   const handleClose = () => {
     setOpen(false);
-    setApplication({});
+    setTitle("");
+    setArTitle("");
     setId("");
   };
 
   const handleSuccess = async () => {
-    async function fetchApplications() {
-      let applications = await AdminServices.applicationsServices.fetchAll();
+    async function fetchStatuses() {
+      let statuses = await AdminServices.statusesServices.fetchAll();
       handleClose();
-      setApplications(applications);
+      setStatuses(statuses);
     }
-    fetchApplications();
+    fetchStatuses();
   };
 
   const handleDeletionSuccess = async () => {
-    async function fetchApplications() {
-      let applications = await AdminServices.applicationsServices.fetchAll();
+    async function fetchStatuses() {
+      let statuses = await AdminServices.statusesServices.fetchAll();
       setDialogOpen(false);
-      setApplications(applications);
+      setStatuses(statuses);
     }
-    fetchApplications();
+    fetchStatuses();
   };
 
   const handleDialogClose = () => {
@@ -150,9 +149,7 @@ function ListApplications({ isConnected }) {
 
   const handleDeleteConfirmation = async () => {
     try {
-      const res = await AdminServices.applicationsServices.deleteApplication(
-        id
-      );
+      const res = await AdminServices.statusesServices.deleteStatus(id);
       if (res) {
         handleDeletionSuccess();
       }
@@ -161,7 +158,6 @@ function ListApplications({ isConnected }) {
 
   return (
     <>
-      <p>{isConnected}</p>
       <div style={{ display: "flex", height: "68vh" }}>
         <div style={{ flexGrow: 1 }}>
           <DataGrid
@@ -183,27 +179,11 @@ function ListApplications({ isConnected }) {
         aria-describedby="simple-modal-description"
       >
         <div style={modalStyle} className={classes.paper}>
-          <h2 id="simple-modal-title">Update Application</h2>
+          <h2 id="simple-modal-title">Update Status</h2>
           <div id="simple-modal-description">
-            <Application
-              name={application.name}
-              fatherName={application.fatherName}
-              motherName={application.motherName}
-              sex={application.sex}
-              birthDate={application.birthDate}
-              nationality={application.nationality}
-              residenceCountry={application.residenceCountry}
-              email={application.email}
-              phone={application.phone}
-              hearedAboutUs={application.hearedAboutUs}
-              scientificDegree={application.scientificDegree}
-              university={application.university}
-              otherUniversities={application.otherUniversities}
-              specialization={application.specialization}
-              otherSpecialization={application.otherSpecialization}
-              language={application.language}
-              description={application.description}
-              status={application.status}
+            <Status
+              title={title}
+              arTitle={arTitle}
               _id={id}
               handleSuccess={handleSuccess}
             />
@@ -235,6 +215,6 @@ function ListApplications({ isConnected }) {
   );
 }
 
-export default ListApplications;
+export default ListStatuses;
 
 // <Rating name="read-only" value={value} readOnly />

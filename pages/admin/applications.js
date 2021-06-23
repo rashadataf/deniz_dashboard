@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 
 import Admin from "layouts/Admin.js";
-import ListAreas from "../../components/Areas/ListAreas";
+import ListApplications from "../../components/Applications/ListApplications";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,16 +12,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Areas() {
+function Applications() {
   const classes = useStyles();
 
   return (
     <Paper square className={classes.root}>
-      <ListAreas />
+      <ListApplications />
     </Paper>
   );
 }
 
-Areas.layout = Admin;
+Applications.layout = Admin;
 
-export default Areas;
+export default Applications;

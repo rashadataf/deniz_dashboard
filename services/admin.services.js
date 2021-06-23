@@ -17,6 +17,8 @@ import faqsServices from "./admin/faqs";
 import membersServices from "./admin/members";
 import mediaServices from "./admin/media";
 import universitiesServices from "./admin/universities";
+import applicationsServices from "./admin/applications";
+import statusesServices from "./admin/statuses";
 
 const AdminService = {
   countriesServices,
@@ -38,6 +40,8 @@ const AdminService = {
   membersServices,
   mediaServices,
   universitiesServices,
+  applicationsServices,
+  statusesServices,
 };
 
 export default AdminService;
