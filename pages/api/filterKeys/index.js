@@ -16,7 +16,7 @@ async function handler(req, res) {
       const countries = await db.collection("countries").find({}).toArray();
       const colleges = await db.collection("colleges").find({}).toArray();
       const ScientificDegrees = await db
-        .collection("ScientificDegrees")
+        .collection("degrees")
         .find({})
         .toArray();
       const languages = await db.collection("languages").find({}).toArray();
@@ -25,16 +25,14 @@ async function handler(req, res) {
         .collection("specializations")
         .find({})
         .toArray();
-      res
-        .status(200)
-        .send({
-          countries,
-          colleges,
-          ScientificDegrees,
-          languages,
-          programs,
-          specializations,
-        });
+      res.status(200).send({
+        countries,
+        colleges,
+        ScientificDegrees,
+        languages,
+        programs,
+        specializations,
+      });
     } catch (error) {
       res.status(400).send({ error: "there was an error happened!" });
     }

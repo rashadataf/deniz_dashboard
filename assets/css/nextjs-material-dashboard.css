@@ -251,7 +251,6 @@ footer ul li a:hover {
   border-radius: 8px 0 0 8px;
   text-align: center;
   top: 120px;
-  .badge-primary-background-color: #9c27b0;
 }
 
 .fixed-plugin .SocialMediaShareButton,
@@ -527,7 +526,7 @@ footer ul li a:hover {
 }
 .body-page-transition #page-transition > div:after {
   content: "";
-  background-image: url("../img/bg7.jpg");
+  background-image: url("/bg7.jpg");
   background-size: cover;
   position: fixed;
   z-index: 9998;

@@ -1,4 +1,5 @@
 import { getSession } from "next-auth/client";
+import mongodb from "mongodb";
 import { connectToDatabase } from "../../../../util/mongodb";
 import nextConnect from "next-connect";
 import multer from "multer";
@@ -61,8 +62,8 @@ apiRoute.post(async (req, res) => {
     let state = req.body.selectedState;
     let area = req.body.selectedArea;
     let address = req.body.address;
-    let normalPrice = req.body.normalPrice;
-    let discountPrice = req.body.discountPrice;
+    let normalPrice = parseInt(req.body.normalPrice);
+    let discountPrice = parseInt(req.body.discountPrice);
     let localRate = req.body.localRate;
     let internationalRate = req.body.internationalRate;
     let studentsCount = req.body.studentsCount;

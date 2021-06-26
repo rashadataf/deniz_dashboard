@@ -2,7 +2,8 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
-import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import { EditorState } from "draft-js";
+import { convertFromHTML, convertToHTML } from "draft-convert";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
@@ -130,13 +131,13 @@ class Service extends React.Component {
       this.props.description === ""
         ? EditorState.createEmpty()
         : EditorState.createWithContent(
-            convertFromRaw(JSON.parse(this.props.description))
+            convertFromHTML(this.props.description)
           ),
     arEditorState:
       this.props.arDescription === ""
         ? EditorState.createEmpty()
         : EditorState.createWithContent(
-            convertFromRaw(JSON.parse(this.props.arDescription))
+            convertFromHTML(this.props.arDescription)
           ),
   };
 
@@ -159,7 +160,7 @@ class Service extends React.Component {
     const contentState = editorState.getCurrentContent();
     this.setState({
       editorState: editorState,
-      description: JSON.stringify(convertToRaw(contentState)),
+      description: convertToHTML(contentState),
     });
   };
 
@@ -167,7 +168,7 @@ class Service extends React.Component {
     const contentState = arEditorState.getCurrentContent();
     this.setState({
       arEditorState: arEditorState,
-      arDescription: JSON.stringify(convertToRaw(contentState)),
+      arDescription: convertToHTML(contentState),
     });
   };
 

@@ -38,13 +38,6 @@ const uploadMiddleware = upload.single("image");
 
 apiRoute.use(uploadMiddleware);
 
-export default apiRoute;
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 apiRoute.get(async (req, res) => {
   const session = await getSession({ req: req });
   if (!session) {
@@ -65,7 +58,9 @@ apiRoute.get(async (req, res) => {
   } = req;
   try {
     const { client, db } = await connectToDatabase();
-    const blog = db.collection("blogs").find({ _id: new mongodb.ObjectID(id) });
+    const blog = await db
+      .collection("agents")
+      .find({ _id: new mongodb.ObjectID(id) });
     delete blog.password;
     res.status(200).send(blog);
   } catch (error) {
@@ -100,6 +95,7 @@ apiRoute.put(async (req, res) => {
         imageUrl = req.body.image;
       }
     }
+
     const name = req.body.name;
     if (name.length === 0) {
       throw new Error("name can't be empty!");
@@ -115,7 +111,8 @@ apiRoute.put(async (req, res) => {
     if (email.length === 0) {
       throw new Error("email can't be empty!");
     } else {
-      let emailFilter = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+      let emailFilter =
+        /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
       let isEmail = emailFilter.test(email);
       if (!isEmail) {
         throw new Error("an invalid email!");
@@ -125,7 +122,7 @@ apiRoute.put(async (req, res) => {
     const companyFacebook = req.body.companyFacebook;
     const companyAddress = req.body.companyAddress;
     const status = req.body.status;
-    if (status !== "active" || status !== "inactive") {
+    if (status !== "active" && status !== "inactive") {
       throw new Error("an invalid status!");
     }
     let updatedAgent = {
@@ -139,7 +136,7 @@ apiRoute.put(async (req, res) => {
       status: status,
       imageUrl: imageUrl,
     };
-    const { client, db } = await connectToDatabase();
+
     const agents = db.collection("agents");
     const agent = await agents.findOne({ _id: new mongodb.ObjectID(id) });
     if (agent.imageUrl) {
@@ -205,3 +202,10 @@ apiRoute.delete(async (req, res) => {
     console.log(error);
   }
 });
+
+export default apiRoute;
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

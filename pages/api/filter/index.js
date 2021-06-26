@@ -1,3 +1,4 @@
+import mongodb from "mongodb";
 import { connectToDatabase } from "../../../util/mongodb";
 
 const allowCors = (fn) => async (req, res) => {
@@ -15,21 +16,37 @@ async function handler(req, res) {
     if (req.method === "POST") {
       try {
         const { client, db } = await connectToDatabase();
-        const { country, scientificDegree, college, language, priceRange } =
-          req.body;
-        const searchResult = [];
+        const {
+          country,
+          scientificDegree,
+          specialization,
+          college,
+          language,
+          from,
+          to,
+        } = req.body;
         const query = {};
-        if (country) query.country = country;
-        if (scientificDegree)
+        if (country && country.length > 0) query.country = country;
+        if (scientificDegree && scientificDegree.length > 0)
           query.scientificDegrees = { $in: [scientificDegree] };
-        if (college) query.colleges = { $in: [college] };
+        if (college && college.length > 0) query.colleges = { $in: [college] };
 
-        if (specializations && specializations.length > 0)
-          query.specializations = { $in: JSON.parse(specializations) };
-        if (language) query.language = { $in: [language] };
-        if (priceRange && priceRange.length > 0) {
-          const price = priceRange.split("-");
-          query.normalPrice = { $gt: price[0], $lt: price[1] };
+        if (specialization && specialization.length > 0)
+          query.specializations = { $in: [specialization] };
+
+        if (language && language.length) query.language = { $in: [language] };
+        if (from && from.length > 0) {
+          let lowPrice = parseInt(from);
+          if (isNaN(lowPrice))
+            throw new Error("you can just search numeric values!");
+          query.normalPrice = { $gte: lowPrice };
+        }
+
+        if (to && to.length > 0) {
+          let highPrice = parseInt(to);
+          if (isNaN(highPrice))
+            throw new Error("you can just search numeric values!");
+          query.normalPrice = { ...query.normalPrice, $lte: highPrice };
         }
 
         const universities = await db
@@ -37,50 +54,73 @@ async function handler(req, res) {
           .find(query)
           .toArray();
 
-        // if (universities.length > 0) {
-        //   for (let i = 0; i < universities.length; i++) {
-        //     let university = universities[i];
-        //     if (country) {
-        //       if (university.country && university.country === country) {
-        //         console.log("country");
-        //         searchResult.push(university);
-        //       }
-        //     }
-        //     if (scientificDegree) {
-        //       if (
-        //         university.scientificDegrees &&
-        //         university.scientificDegrees.length > 0
-        //       ) {
-        //         for (let j = 0; j < university.scientificDegrees.length; j++) {
-        //           let universityScientificDegree = await db
-        //             .collection("scientificDegrees")
-        //             .findOne({
-        //               _id: new mongodb.ObjectID(university.scientificDegrees[j]),
-        //             });
-        //           if (
-        //             universityScientificDegree &&
-        //             universityScientificDegree.title.toLowerCase() ===
-        //               scientificDegree.toLowerCase()
-        //           ) {
-        //             searchResult.push();
-        //           }
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
+        const result = [];
 
-        // if (university) {
-        //   const category = university.category;
-        //   const returnedCategory = await db
-        //     .collection("categories")
-        //     .findOne({ _id: category });
-        //   university.category = returnedCategory;
-        //   return res.status(200).send(university);
-        // } else {
-        //   return res.status(404).send({ message: "university was not found!" });
-        // }
-        res.send(universities);
+        for (let i = 0; i < universities.length; i++) {
+          let currentUniversity = universities[i];
+          let currentUniversityState = await db
+            .collection("states")
+            .findOne({ _id: new mongodb.ObjectID(currentUniversity.state) });
+          let currentUniversityArea = await db
+            .collection("areas")
+            .findOne({ _id: new mongodb.ObjectID(currentUniversity.area) });
+          let currentUniversityCountry = await db
+            .collection("countries")
+            .findOne({ _id: new mongodb.ObjectID(currentUniversity.country) });
+          let currentUniversityColleges = [];
+          for (let j = 0; j < currentUniversity.colleges.length; j++) {
+            const currentCollegeID = currentUniversity.colleges[j];
+            const college = await db
+              .collection("colleges")
+              .findOne({ _id: new mongodb.ObjectID(currentCollegeID) });
+            currentUniversityColleges.push(college);
+          }
+          let currentUniversitySpecializations = [];
+          for (let j = 0; j < currentUniversity.specializations.length; j++) {
+            const currentSpecializationID =
+              currentUniversity.specializations[j];
+            const specialization = await db
+              .collection("specializations")
+              .findOne({ _id: new mongodb.ObjectID(currentSpecializationID) });
+            currentUniversitySpecializations.push(specialization);
+          }
+          let currentUniversityScientificDegrees = [];
+          for (let j = 0; j < currentUniversity.scientificDegrees.length; j++) {
+            const currentScientificDegreeID =
+              currentUniversity.scientificDegrees[j];
+            const scientificDegree = await db.collection("degrees").findOne({
+              _id: new mongodb.ObjectID(currentScientificDegreeID),
+            });
+            currentUniversityScientificDegrees.push(scientificDegree);
+          }
+          let currentUniversityPrograms = [];
+          for (let j = 0; j < currentUniversity.programs.length; j++) {
+            const currentProgramsID = currentUniversity.programs[j];
+            const program = await db
+              .collection("programs")
+              .findOne({ _id: new mongodb.ObjectID(currentProgramsID) });
+            currentUniversityPrograms.push(program);
+          }
+          let currentUniversityLanguages = [];
+          for (let j = 0; j < currentUniversity.languages.length; j++) {
+            const currentLanguageID = currentUniversity.languages[j];
+            const language = await db
+              .collection("languages")
+              .findOne({ _id: new mongodb.ObjectID(currentLanguageID) });
+            currentUniversityLanguages.push(language);
+          }
+          currentUniversity.state = currentUniversityState;
+          currentUniversity.area = currentUniversityArea;
+          currentUniversity.country = currentUniversityCountry;
+          currentUniversity.colleges = currentUniversityColleges;
+          currentUniversity.specializations = currentUniversitySpecializations;
+          currentUniversity.scientificDegrees =
+            currentUniversityScientificDegrees;
+          currentUniversity.programs = currentUniversityPrograms;
+          currentUniversity.languages = currentUniversityLanguages;
+          result.push(currentUniversity);
+        }
+        res.send(result);
       } catch (error) {
         res.status(400).send({ error: "there was an error happened!" + error });
       }

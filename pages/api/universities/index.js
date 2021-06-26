@@ -12,10 +12,17 @@ const allowCors = (fn) => async (req, res) => {
 async function handler(req, res) {
   if (req.method === "GET") {
     try {
+      const {
+        query: { specialization },
+      } = req;
       const { client, db } = await connectToDatabase();
+      const query = {};
+      if (specialization && specialization.length > 0) {
+        query.specializations = { $in: [specialization] };
+      }
       const universities = await db
         .collection("universities")
-        .find({})
+        .find(query)
         .toArray();
       const result = [];
       for (let i = 0; i < universities.length; i++) {
@@ -50,7 +57,7 @@ async function handler(req, res) {
           const currentScientificDegreeID =
             currentUniversity.scientificDegrees[j];
           const scientificDegree = await db
-            .collection("scientificDegrees")
+            .collection("degrees")
             .findOne({ _id: new mongodb.ObjectID(currentScientificDegreeID) });
           currentUniversityScientificDegrees.push(scientificDegree);
         }

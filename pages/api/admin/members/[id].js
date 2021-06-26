@@ -126,7 +126,7 @@ apiRoute.put(async (req, res) => {
     const university = req.body.university;
 
     const status = req.body.status;
-    if (status !== "active" || status !== "inactive") {
+    if (status !== "active" && status !== "inactive") {
       throw new Error("an invalid status!");
     }
 

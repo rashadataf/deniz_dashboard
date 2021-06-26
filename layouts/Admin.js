@@ -1,8 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/client";
-// creates a beautiful scrollbar
-import "perfect-scrollbar/css/perfect-scrollbar.css";
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components

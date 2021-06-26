@@ -2,7 +2,8 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState } from "draft-js";
+import { convertToHTML } from "draft-convert";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
@@ -132,7 +133,7 @@ class NewBlog extends React.Component {
     const contentState = editorState.getCurrentContent();
     this.setState({
       editorState: editorState,
-      description: JSON.stringify(convertToRaw(contentState)),
+      description: convertToHTML(contentState),
     });
   };
 
@@ -140,7 +141,7 @@ class NewBlog extends React.Component {
     const contentState = arEditorState.getCurrentContent();
     this.setState({
       arEditorState: arEditorState,
-      arDescription: JSON.stringify(convertToRaw(contentState)),
+      arDescription: convertToHTML(contentState),
     });
   };
 

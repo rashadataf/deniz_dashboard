@@ -28,10 +28,7 @@ const createNewAgent = async (formData) => {
 
 const updateAgent = async (_id, formData) => {
   try {
-    const token = localStorage.getItem("token");
-    const response = await axios.put(`${API}/agents/${_id}`, formData, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await axios.put(`${API}/agents/${_id}`, formData);
     return true;
   } catch (error) {
     console.log(error);
