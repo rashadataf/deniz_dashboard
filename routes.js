@@ -37,6 +37,7 @@ import PermMediaIcon from "@material-ui/icons/PermMedia";
 import ContactMailIcon from "@material-ui/icons/ContactMail";
 import InfoIcon from "@material-ui/icons/Info";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
+import SettingsIcon from "@material-ui/icons/Settings";
 
 import SvgIcon from "@material-ui/core/SvgIcon";
 const state = (props) => (
@@ -209,6 +210,12 @@ const dashboardRoutes = [
     path: "/contacts",
     name: "Contacts",
     icon: AccountBoxIcon,
+    layout: "/admin",
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    icon: SettingsIcon,
     layout: "/admin",
   },
 ];

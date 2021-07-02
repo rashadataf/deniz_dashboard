@@ -200,7 +200,7 @@ function ListApplications({ isConnected }) {
               university={application.university}
               otherUniversities={application.otherUniversities}
               specialization={application.specialization}
-              otherSpecialization={application.otherSpecialization}
+              otherSpecializations={application.otherSpecializations}
               language={application.language}
               description={application.description}
               status={application.status}

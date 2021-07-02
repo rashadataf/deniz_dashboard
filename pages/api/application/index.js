@@ -30,7 +30,7 @@ async function handler(req, res) {
           university,
           otherUniversities,
           specialization,
-          otherSpecialization,
+          otherSpecializations,
           language,
           description,
         } = req.body;
@@ -78,9 +78,10 @@ async function handler(req, res) {
         if (specialization && specialization.length > 0)
           newApplication.specialization = specialization;
         else throw new Error("an invalid specialization!");
-        if (otherSpecialization && otherSpecialization.length > 0)
-          newApplication.otherSpecialization = otherSpecialization;
-        else newApplication.otherSpecialization = "";
+        if (otherSpecializations && JSON.parse(otherSpecializations).length > 0)
+          newApplication.otherSpecializations =
+            JSON.parse(otherSpecializations);
+        else newApplication.otherSpecializations = [];
         if (language && language.length > 0) newApplication.language = language;
         else newApplication.language = "";
         if (description && description.length > 0)
@@ -90,6 +91,31 @@ async function handler(req, res) {
         const application = await db
           .collection("applications")
           .insertOne(newApplication);
+
+        var nodemailer = require("nodemailer");
+
+        var transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "rashadtest993@gmail.com",
+            pass: "Rashadtest1993#",
+          },
+        });
+
+        var mailOptions = {
+          from: "rashadtest993@gmail.com",
+          to: `${email}`,
+          subject: "Success",
+          text: `Your application was recived and your ID is: ${application.insertedId}`,
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        });
 
         res.send(application.insertedId);
       } catch (error) {

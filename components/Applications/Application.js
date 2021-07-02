@@ -49,11 +49,10 @@ class Area extends React.Component {
     university: this.props.university || "",
     otherUniversities: this.props.otherUniversities || [],
     specialization: this.props.specialization || "",
-    otherSpecialization: this.props.otherSpecialization || "",
+    otherSpecializations: this.props.otherSpecializations || [],
     language: this.props.language || "",
     description: this.props.description || "",
     status: this.props.status || "",
-    otherUniversities: this.props.otherUniversities || [],
     statuses: [],
   };
 
@@ -391,29 +390,25 @@ class Area extends React.Component {
               }}
             />
           </div>
-          <div
-            className={this.props.classes.title}
-            style={{ marginTop: "2rem" }}
-          >
-            <TextField
-              id="otherSpecialization"
-              label="OtherSpecialization"
-              value={this.state.otherSpecialization}
-              onChange={this.handleChange}
-              onBlur={this.validateInput}
-              style={{ width: "100%" }}
-              className={this.props.classes.textField}
-              variant="outlined"
-              helperText={"Other Specialization To Study"}
-              FormHelperTextProps={{
-                style: {
-                  marginTop: "0.5rem",
-                },
-              }}
-              inputProps={{
-                readOnly: true,
-              }}
-            />
+          <div style={{ width: "100%" }}>
+            <h6>Other Specializations</h6>
+            <div style={{ marginTop: "-2rem" }}>
+              {this.state.otherSpecializations.length > 0 ? (
+                <List>
+                  {this.state.otherSpecializations.map(
+                    (specialization, index) => (
+                      <ListItem key={index}>
+                        <ListItemText primary={specialization} />
+                      </ListItem>
+                    )
+                  )}
+                </List>
+              ) : (
+                <p style={{ fontSize: "0.8rem" }}>
+                  There Is No Specializations
+                </p>
+              )}
+            </div>
           </div>
           <div
             className={this.props.classes.title}
