@@ -42,8 +42,7 @@ function ListAreas({ isConnected }) {
   const [areas, setAreas] = useState([]);
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [arTitle, setArTitle] = useState("");
+  const [area, setArea] = React.useState({});
   const [id, setId] = useState("");
   useEffect(() => {
     async function fetchAreas() {
@@ -72,8 +71,7 @@ function ListAreas({ isConnected }) {
             size="small"
             style={{ marginLeft: 16 }}
             onClick={() => {
-              setTitle(params.row.title);
-              setArTitle(params.row.arTitle);
+              setArea(areas.find((area) => area._id === params.row._id));
               setId(params.row._id);
               handleOpen(true);
             }}
@@ -121,8 +119,7 @@ function ListAreas({ isConnected }) {
 
   const handleClose = () => {
     setOpen(false);
-    setTitle("");
-    setArTitle("");
+    setArea({});
     setId("");
   };
 
@@ -185,8 +182,9 @@ function ListAreas({ isConnected }) {
           <h2 id="simple-modal-title">Update Area</h2>
           <div id="simple-modal-description">
             <Area
-              title={title}
-              arTitle={arTitle}
+              title={area.title}
+              arTitle={area.arTitle}
+              state={area.state}
               _id={id}
               handleSuccess={handleSuccess}
             />

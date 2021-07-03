@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     case "PUT":
       {
         const updates = Object.keys(req.body);
-        const allowedUpdates = ["title", "arTitle"];
+        const allowedUpdates = ["title", "arTitle", "state"];
         const isValidOperation = updates.every((update) =>
           allowedUpdates.includes(update)
         );
@@ -39,12 +39,16 @@ export default async function handler(req, res) {
         }
         try {
           const { client, db } = await connectToDatabase();
-          const result = await db
-            .collection("areas")
-            .updateOne(
-              { _id: new mongodb.ObjectID(id) },
-              { $set: { title: req.body.title, arTitle: req.body.arTitle } }
-            );
+          const result = await db.collection("areas").updateOne(
+            { _id: new mongodb.ObjectID(id) },
+            {
+              $set: {
+                title: req.body.title,
+                arTitle: req.body.arTitle,
+                state: req.body.state,
+              },
+            }
+          );
           res.status(200).json({ success: "updated!" });
         } catch (error) {
           res.status(400).send(error);

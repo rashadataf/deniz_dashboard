@@ -2,7 +2,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 
 import { EditorState } from "draft-js";
-import { convertFromHTML, convertToHTML } from "draft-convert";
+import { convertToHTML } from "draft-convert";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
@@ -14,6 +14,10 @@ import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
 import Chip from "@material-ui/core/Chip";
 import Container from "@material-ui/core/Container";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormLabel from "@material-ui/core/FormLabel";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -100,6 +104,7 @@ class NewUniversity extends React.Component {
     arTitleError: "",
     establishmentYear: "",
     establishmentYearError: "",
+    universityType: "private",
     selectedState: "",
     states: [],
     selectedArea: "",
@@ -141,7 +146,8 @@ class NewUniversity extends React.Component {
       this.setState({ scientificDegrees: scientificDegrees });
     };
     const fetchSpecializations = async () => {
-      const specializations = await AdminServices.specializationsServices.fetchAll();
+      const specializations =
+        await AdminServices.specializationsServices.fetchAll();
       this.setState({ specializations: specializations });
     };
     const fetchLanguages = async () => {
@@ -152,19 +158,10 @@ class NewUniversity extends React.Component {
       const programs = await AdminServices.programsServices.fetchAll();
       this.setState({ programs: programs });
     };
-    const fetchStates = async () => {
-      const states = await AdminServices.statesServices.fetchAll();
-      this.setState({ states: states });
-    };
     const fetchCountries = async () => {
       const countries = await AdminServices.countriesServices.fetchAll();
       this.setState({ countries: countries });
     };
-    const fetchAreas = async () => {
-      const areas = await AdminServices.areasServices.fetchAll();
-      this.setState({ areas: areas });
-    };
-
     const fetchColleges = async () => {
       const colleges = await AdminServices.collegesServices.fetchAll();
       this.setState({ colleges: colleges });
@@ -173,9 +170,7 @@ class NewUniversity extends React.Component {
     fetchSpecializations();
     fetchLanguages();
     fetchPrograms();
-    fetchStates();
     fetchCountries();
-    fetchAreas();
     fetchColleges();
   }
 
@@ -219,15 +214,33 @@ class NewUniversity extends React.Component {
   };
 
   handleStateSelect = (event) => {
-    if (event.target.value !== 0)
-      this.setState({ selectedState: event.target.value });
-    else this.setState({ selectedState: "" });
+    const getStateAreas = async () => {
+      const areas = await AdminServices.statesServices.getStateAreas(
+        event.target.value
+      );
+      this.setState({ areas: areas });
+    };
+    if (event.target.value !== 0) {
+      this.setState({ selectedState: event.target.value, selectedArea: "0" });
+      getStateAreas();
+    } else this.setState({ selectedState: "", selectedArea: "0", areas: [] });
   };
 
   handleCountrySelect = (event) => {
-    if (event.target.value !== 0)
-      this.setState({ selectedCountry: event.target.value });
-    else this.setCountry({ selectedCountry: "" });
+    const getCountryStates = async () => {
+      const states = await AdminServices.countriesServices.getCountryStates(
+        event.target.value
+      );
+      this.setState({ states: states });
+    };
+    if (event.target.value !== 0) {
+      this.setState({
+        selectedCountry: event.target.value,
+        selectedState: "0",
+      });
+      getCountryStates();
+    } else
+      this.setCountry({ selectedCountry: "", selectedState: "0", states: [] });
   };
 
   handleAreaSelect = (event) => {
@@ -311,6 +324,7 @@ class NewUniversity extends React.Component {
       formData.append("establishmentYear", this.state.establishmentYear);
       formData.append("selectedState", this.state.selectedState);
       formData.append("selectedArea", this.state.selectedArea);
+      formData.append("universityType", this.state.universityType);
       formData.append("address", this.state.address);
       formData.append("normalPrice", this.state.normalPrice);
       formData.append("discountPrice", this.state.discountPrice);
@@ -345,9 +359,8 @@ class NewUniversity extends React.Component {
       for (let i = 0; i < this.state.images.length; i++) {
         formData.append("images", this.state.images[i]);
       }
-      const result = await AdminServices.universitiesServices.createNewUniversity(
-        formData
-      );
+      const result =
+        await AdminServices.universitiesServices.createNewUniversity(formData);
       if (result) {
         this.setState({
           title: "",
@@ -360,6 +373,7 @@ class NewUniversity extends React.Component {
           states: [],
           selectedArea: "",
           areas: [],
+          universityType: "",
           address: "",
           normalPrice: "",
           discountPrice: "",
@@ -914,6 +928,28 @@ class NewUniversity extends React.Component {
                 </option>
               ))}
             </TextField>
+          </div>
+          <div style={{ marginTop: "4rem", width: "100%" }}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">University Type</FormLabel>
+              <RadioGroup
+                aria-label="universityType"
+                name="universityType"
+                value={this.state.universityType}
+                onChange={this.handleChange}
+              >
+                <FormControlLabel
+                  value="private"
+                  control={<Radio />}
+                  label="Private"
+                />
+                <FormControlLabel
+                  value="govermental"
+                  control={<Radio />}
+                  label="Govermental"
+                />
+              </RadioGroup>
+            </FormControl>
           </div>
           <div style={{ marginTop: "4rem", width: "100%" }}>
             <TextField

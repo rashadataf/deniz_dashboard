@@ -67,9 +67,22 @@ class State extends React.Component {
     _id: this.props._id || "",
     title: this.props.title || "",
     arTitle: this.props.arTitle || "",
+    selectedCountry: this.props.country || "",
+    selectedCountryError: "",
+    countries: [],
     titleError: "",
     arTitleError: "",
   };
+
+  componentDidMount() {
+    const fetchCountries = async () => {
+      const result = await AdminServices.countriesServices.fetchAll();
+      this.setState({
+        countries: result,
+      });
+    };
+    fetchCountries();
+  }
 
   handleChange = (event) => {
     this.setState({
@@ -80,14 +93,22 @@ class State extends React.Component {
 
   validateInput = () => {
     let titleError = "",
-      arTitleError = "";
-    if (this.state.title === "") titleError = "This field cann't be empty!";
+      arTitleError = "",
+      selectedCountryError = "";
+    if (this.state.title === "") titleError = "This field can't be empty!";
     if (this.state.arTitle === "")
       arTitleError = "هذا الحقل لايمكن أن يبقى فارغا!";
-    if (titleError.length > 0 || arTitleError.length > 0) {
+    if (this.state.selectedCountry === "" || this.state.selectedCountry === "0")
+      selectedCountryError = "This field can't be empty!";
+    if (
+      titleError.length > 0 ||
+      arTitleError.length > 0 ||
+      selectedCountryError.length > 0
+    ) {
       this.setState({
         titleError: titleError,
         arTitleError: arTitleError,
+        selectedCountryError: selectedCountryError,
       });
       return false;
     }
@@ -99,7 +120,8 @@ class State extends React.Component {
       const result = await AdminServices.statesServices.updateState(
         this.state._id,
         this.state.title,
-        this.state.arTitle
+        this.state.arTitle,
+        this.state.selectedCountry
       );
       if (result) {
         this.setState({
@@ -107,6 +129,8 @@ class State extends React.Component {
           arTitle: "",
           titleError: "",
           arTitleError: "",
+          selectedCountry: "",
+          selectedCountryError: "",
         });
         this.props.handleSuccess();
       }
@@ -166,6 +190,41 @@ class State extends React.Component {
                 />
               }
             />
+          </div>
+          <div style={{ marginTop: "2rem", width: "100%" }}>
+            <TextField
+              id="country"
+              name="selectedCountry"
+              select
+              required
+              label="Country"
+              value={this.state.selectedCountry}
+              onChange={this.handleChange}
+              onBlur={this.validateInput}
+              style={{ width: "50%" }}
+              InputLabelProps={{
+                classes: {
+                  asterisk: this.props.classes.labelAsterisk,
+                },
+              }}
+              SelectProps={{
+                native: true,
+              }}
+              helperText={
+                this.state.selectedCountryError
+                  ? `${this.state.selectedCountryError}`
+                  : `Please select Country.`
+              }
+              error={this.state.selectedCountryError ? true : false}
+              variant="outlined"
+            >
+              <option value="0">Please Select</option>
+              {this.state.countries.map((option) => (
+                <option key={option._id} value={option._id}>
+                  {option.title}
+                </option>
+              ))}
+            </TextField>
           </div>
           <Button
             variant="contained"

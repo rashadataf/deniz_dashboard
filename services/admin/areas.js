@@ -4,46 +4,33 @@ const API = "/api/admin";
 
 const fetchAll = async () => {
   try {
-    const token = localStorage.getItem("token");
-    const response = await axios.get(`${API}/areas`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await axios.get(`${API}/areas`);
     return response.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-const createNewArea = async (title, arTitle) => {
+const createNewArea = async (title, arTitle, selectedState) => {
   try {
-    const token = localStorage.getItem("token");
-    const response = await axios.post(
-      `${API}/areas`,
-      { title, arTitle },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const response = await axios.post(`${API}/areas`, {
+      title,
+      arTitle,
+      state: selectedState,
+    });
     return true;
   } catch (error) {
     console.log(error);
   }
 };
 
-const updateArea = async (_id, title, arTitle) => {
+const updateArea = async (_id, title, arTitle, selectedState) => {
   try {
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: "JWT fefege...",
-    };
-    const token = localStorage.getItem("token");
-    const response = await axios.put(
-      `${API}/areas/${_id}`,
-      { title, arTitle },
-      {
-        headers: headers,
-      }
-    );
+    const response = await axios.put(`${API}/areas/${_id}`, {
+      title,
+      arTitle,
+      state: selectedState,
+    });
     return true;
   } catch (error) {
     console.log(error);

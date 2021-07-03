@@ -41,8 +41,7 @@ function ListStates() {
   const [states, setStates] = useState([]);
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [arTitle, setArTitle] = useState("");
+  const [state, setState] = React.useState({});
   const [id, setId] = useState("");
   useEffect(() => {
     async function fetchStates() {
@@ -71,8 +70,7 @@ function ListStates() {
             size="small"
             style={{ marginLeft: 16 }}
             onClick={() => {
-              setTitle(params.row.title);
-              setArTitle(params.row.arTitle);
+              setState(states.find((state) => state._id === params.row._id));
               setId(params.row._id);
               handleOpen(true);
             }}
@@ -120,8 +118,7 @@ function ListStates() {
 
   const handleClose = () => {
     setOpen(false);
-    setTitle("");
-    setArTitle("");
+    setState({});
     setId("");
   };
 
@@ -183,8 +180,9 @@ function ListStates() {
           <h2 id="simple-modal-title">Update State</h2>
           <div id="simple-modal-description">
             <State
-              title={title}
-              arTitle={arTitle}
+              title={state.title}
+              arTitle={state.arTitle}
+              country={state.country}
               _id={id}
               handleSuccess={handleSuccess}
             />

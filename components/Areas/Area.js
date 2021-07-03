@@ -67,9 +67,22 @@ class Area extends React.Component {
     _id: this.props._id || "",
     title: this.props.title || "",
     arTitle: this.props.arTitle || "",
+    selectedState: this.props.state,
+    selectedStateError: "",
+    states: [],
     titleError: "",
     arTitleError: "",
   };
+
+  componentDidMount() {
+    const fetchStates = async () => {
+      const result = await AdminServices.statesServices.fetchAll();
+      this.setState({
+        states: result,
+      });
+    };
+    fetchStates();
+  }
 
   handleChange = (event) => {
     this.setState({
@@ -80,14 +93,22 @@ class Area extends React.Component {
 
   validateInput = () => {
     let titleError = "",
-      arTitleError = "";
-    if (this.state.title === "") titleError = "This field cann't be empty!";
+      arTitleError = "",
+      selectedStateError = "";
+    if (this.state.title === "") titleError = "This field can't be empty!";
     if (this.state.arTitle === "")
       arTitleError = "هذا الحقل لايمكن أن يبقى فارغا!";
-    if (titleError.length > 0 || arTitleError.length > 0) {
+    if (this.state.selectedCountry === "" || this.state.selectedCountry === "0")
+      selectedStateError = "This field can't be empty!";
+    if (
+      titleError.length > 0 ||
+      arTitleError.length > 0 ||
+      selectedStateError.length > 0
+    ) {
       this.setState({
         titleError: titleError,
         arTitleError: arTitleError,
+        selectedStateError: selectedStateError,
       });
       return false;
     }
@@ -99,7 +120,8 @@ class Area extends React.Component {
       const result = await AdminServices.areasServices.updateArea(
         this.state._id,
         this.state.title,
-        this.state.arTitle
+        this.state.arTitle,
+        this.state.selectedState
       );
       if (result) {
         this.setState({
@@ -107,6 +129,8 @@ class Area extends React.Component {
           arTitle: "",
           titleError: "",
           arTitleError: "",
+          selectedState: "",
+          selectedStateError: "",
         });
         this.props.handleSuccess();
       }
@@ -166,6 +190,41 @@ class Area extends React.Component {
                 />
               }
             />
+          </div>
+          <div style={{ marginTop: "2rem", width: "100%" }}>
+            <TextField
+              id="state"
+              name="selectedState"
+              select
+              required
+              label="State"
+              value={this.state.selectedState}
+              onChange={this.handleChange}
+              onBlur={this.validateInput}
+              style={{ width: "50%" }}
+              InputLabelProps={{
+                classes: {
+                  asterisk: this.props.classes.labelAsterisk,
+                },
+              }}
+              SelectProps={{
+                native: true,
+              }}
+              helperText={
+                this.state.selectedStateError
+                  ? `${this.state.selectedStateError}`
+                  : `Please select State.`
+              }
+              error={this.state.selectedStateError ? true : false}
+              variant="outlined"
+            >
+              <option value="0">Please Select</option>
+              {this.state.states.map((option) => (
+                <option key={option._id} value={option._id}>
+                  {option.title}
+                </option>
+              ))}
+            </TextField>
           </div>
           <Button
             variant="contained"

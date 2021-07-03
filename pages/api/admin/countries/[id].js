@@ -24,8 +24,14 @@ export default async function handler(req, res) {
 
   switch (method) {
     case "GET":
-      // Get data from your database
-      res.status(200).json({ id, name: `User ${id}` });
+      {
+        const { client, db } = await connectToDatabase();
+        const states = await db
+          .collection("states")
+          .find({ country: id })
+          .toArray();
+        res.status(200).send(states);
+      }
       break;
     case "PUT":
       {

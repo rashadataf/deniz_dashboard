@@ -87,6 +87,7 @@ apiRoute.put(async (req, res) => {
     let establishmentYear = req.body.establishmentYear;
     let state = req.body.selectedState;
     let area = req.body.selectedArea;
+    let universityType = req.body.universityType;
     let address = req.body.address;
     let normalPrice = parseInt(req.body.normalPrice);
     let discountPrice = parseInt(req.body.discountPrice);
@@ -150,6 +151,7 @@ apiRoute.put(async (req, res) => {
           establishmentYear,
           state,
           area,
+          universityType,
           address,
           normalPrice,
           discountPrice,

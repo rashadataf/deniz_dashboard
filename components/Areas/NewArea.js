@@ -56,6 +56,9 @@ function withMyHook(MyComponent) {
       textField: {
         width: "49%",
       },
+      labelAsterisk: {
+        color: "red",
+      },
     }));
     const classes = useStyles();
     return <MyComponent {...props} classes={classes} />;
@@ -68,7 +71,20 @@ class NewArea extends React.Component {
     arTitle: "",
     titleError: "",
     arTitleError: "",
+    selectedState: "",
+    selectedStateError: "",
+    states: [],
   };
+
+  componentDidMount() {
+    const fetchStates = async () => {
+      const result = await AdminServices.statesServices.fetchAll();
+      this.setState({
+        states: result,
+      });
+    };
+    fetchStates();
+  }
 
   handleChange = (event) => {
     this.setState({
@@ -79,14 +95,22 @@ class NewArea extends React.Component {
 
   validateInput = () => {
     let titleError = "",
-      arTitleError = "";
-    if (this.state.title === "") titleError = "This field cann't be empty!";
+      arTitleError = "",
+      selectedStateError = "";
+    if (this.state.title === "") titleError = "This field can't be empty!";
     if (this.state.arTitle === "")
       arTitleError = "هذا الحقل لايمكن أن يبقى فارغا!";
-    if (titleError.length > 0 || arTitleError.length > 0) {
+    if (this.state.selectedCountry === "" || this.state.selectedCountry === "0")
+      selectedStateError = "This field can't be empty!";
+    if (
+      titleError.length > 0 ||
+      arTitleError.length > 0 ||
+      selectedStateError.length > 0
+    ) {
       this.setState({
         titleError: titleError,
         arTitleError: arTitleError,
+        selectedStateError: selectedStateError,
       });
       return false;
     }
@@ -97,7 +121,8 @@ class NewArea extends React.Component {
     if (this.validateInput()) {
       const result = await AdminServices.areasServices.createNewArea(
         this.state.title,
-        this.state.arTitle
+        this.state.arTitle,
+        this.state.selectedState
       );
       if (result) {
         this.setState({
@@ -154,6 +179,41 @@ class NewArea extends React.Component {
                 />
               }
             />
+          </div>
+          <div style={{ marginTop: "2rem", width: "100%" }}>
+            <TextField
+              id="state"
+              name="selectedState"
+              select
+              required
+              label="State"
+              value={this.state.selectedState}
+              onChange={this.handleChange}
+              onBlur={this.validateInput}
+              style={{ width: "50%" }}
+              InputLabelProps={{
+                classes: {
+                  asterisk: this.props.classes.labelAsterisk,
+                },
+              }}
+              SelectProps={{
+                native: true,
+              }}
+              helperText={
+                this.state.selectedStateError
+                  ? `${this.state.selectedStateError}`
+                  : `Please select State.`
+              }
+              error={this.state.selectedStateError ? true : false}
+              variant="outlined"
+            >
+              <option value="0">Please Select</option>
+              {this.state.states.map((option) => (
+                <option key={option._id} value={option._id}>
+                  {option.title}
+                </option>
+              ))}
+            </TextField>
           </div>
           <Button
             variant="contained"

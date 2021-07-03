@@ -54,13 +54,6 @@ const Scholarship = (props) => (
 );
 
 const dashboardRoutes = [
-  // {
-  //   path: "/dashboard",
-  //   name: "Main",
-  //   rtlName: "الرئيسية",
-  //   icon: Dashboard,
-  //   layout: "/admin",
-  // },
   {
     path: "/universities",
     name: "Universities",
@@ -153,17 +146,17 @@ const dashboardRoutes = [
     layout: "/admin",
   },
   {
-    path: "/areas",
-    name: "Areas",
-    rtlName: "المناطق",
-    icon: GpsFixedIcon,
-    layout: "/admin",
-  },
-  {
     path: "/states",
     name: "States",
     rtlName: "الولايات",
     icon: state,
+    layout: "/admin",
+  },
+  {
+    path: "/areas",
+    name: "Areas",
+    rtlName: "المناطق",
+    icon: GpsFixedIcon,
     layout: "/admin",
   },
   {

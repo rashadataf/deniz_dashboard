@@ -185,6 +185,7 @@ function ListUniversities() {
               establishmentYear={university.establishmentYear}
               selectedState={university.state}
               selectedArea={university.area}
+              universityType={university.universityType}
               address={university.address}
               normalPrice={university.normalPrice}
               discountPrice={university.discountPrice}
