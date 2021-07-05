@@ -5,6 +5,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 
+import WebSiteInfo from "../../components/WebSiteInfo/WebSiteInfo";
+import ContactInfo from "../../components/ContactInfo/ContactInfo";
 import Admin from "../../layouts/Admin";
 
 function TabPanel(props) {
@@ -16,6 +18,7 @@ function TabPanel(props) {
       hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
       aria-labelledby={`vertical-tab-${index}`}
+      style={{ width: "80%" }}
       {...other}
     >
       {value === index && (
@@ -45,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     display: "flex",
-    height: "60vh",
   },
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
@@ -74,10 +76,10 @@ function Settings() {
         <Tab label="Contact Info" {...a11yProps(1)} />
       </Tabs>
       <TabPanel value={value} index={0}>
-        Web Site Settings
+        <WebSiteInfo />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Contact Info
+        <ContactInfo />
       </TabPanel>
     </div>
   );

@@ -20,6 +20,8 @@ import universitiesServices from "./admin/universities";
 import applicationsServices from "./admin/applications";
 import statusesServices from "./admin/statuses";
 import contactsServices from "./admin/contacts";
+import webSiteInfoServices from "./admin/WebSiteInfoServices";
+import contactInfoServices from "./admin/contactInfo";
 
 const AdminService = {
   countriesServices,
@@ -44,6 +46,8 @@ const AdminService = {
   applicationsServices,
   statusesServices,
   contactsServices,
+  webSiteInfoServices,
+  contactInfoServices,
 };
 
 export default AdminService;
