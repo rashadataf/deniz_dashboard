@@ -21,15 +21,21 @@ async function handler(req, res) {
         .collection("universities")
         .findOne({ _id: new mongodb.ObjectID(id) });
       if (university) {
-        let universityState = await db
-          .collection("states")
-          .findOne({ _id: new mongodb.ObjectID(university.state) });
-        let universityArea = await db
-          .collection("areas")
-          .findOne({ _id: new mongodb.ObjectID(university.area) });
-        let universityCountry = await db
-          .collection("countries")
-          .findOne({ _id: new mongodb.ObjectID(university.country) });
+        let universityState;
+        let universityArea;
+        let universityCountry;
+        if (university.state && university.state.length > 0)
+          universityState = await db
+            .collection("states")
+            .findOne({ _id: new mongodb.ObjectID(university.state) });
+        if (university.area && university.area.length > 0)
+          universityArea = await db
+            .collection("areas")
+            .findOne({ _id: new mongodb.ObjectID(university.area) });
+        if (university.country && university.country.length > 0)
+          universityCountry = await db
+            .collection("countries")
+            .findOne({ _id: new mongodb.ObjectID(university.country) });
         let universityColleges = [];
         for (let j = 0; j < university.colleges.length; j++) {
           const currentCollegeID = university.colleges[j];
@@ -70,9 +76,9 @@ async function handler(req, res) {
             .findOne({ _id: new mongodb.ObjectID(currentLanguageID) });
           universityLanguages.push(language);
         }
-        university.state = universityState;
-        university.area = universityArea;
-        university.country = universityCountry;
+        university.state = universityState || "";
+        university.area = universityArea || "";
+        university.country = universityCountry || "";
         university.colleges = universityColleges;
         university.specializations = universitySpecializations;
         university.scientificDegrees = universityScientificDegrees;

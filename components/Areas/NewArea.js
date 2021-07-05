@@ -100,7 +100,7 @@ class NewArea extends React.Component {
     if (this.state.title === "") titleError = "This field can't be empty!";
     if (this.state.arTitle === "")
       arTitleError = "هذا الحقل لايمكن أن يبقى فارغا!";
-    if (this.state.selectedCountry === "" || this.state.selectedCountry === "0")
+    if (this.state.selectedState === "" || this.state.selectedState === "0")
       selectedStateError = "This field can't be empty!";
     if (
       titleError.length > 0 ||

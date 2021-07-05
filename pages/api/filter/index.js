@@ -58,15 +58,23 @@ async function handler(req, res) {
 
         for (let i = 0; i < universities.length; i++) {
           let currentUniversity = universities[i];
-          let currentUniversityState = await db
-            .collection("states")
-            .findOne({ _id: new mongodb.ObjectID(currentUniversity.state) });
-          let currentUniversityArea = await db
-            .collection("areas")
-            .findOne({ _id: new mongodb.ObjectID(currentUniversity.area) });
-          let currentUniversityCountry = await db
-            .collection("countries")
-            .findOne({ _id: new mongodb.ObjectID(currentUniversity.country) });
+          let currentUniversityState;
+          let currentUniversityArea;
+          let currentUniversityCountry;
+          if (currentUniversity.state && currentUniversity.state.length > 0)
+            currentUniversityState = await db
+              .collection("states")
+              .findOne({ _id: new mongodb.ObjectID(currentUniversity.state) });
+          if (currentUniversity.area && currentUniversity.area.length > 0)
+            currentUniversityArea = await db
+              .collection("areas")
+              .findOne({ _id: new mongodb.ObjectID(currentUniversity.area) });
+          if (currentUniversity.country && currentUniversity.country.length > 0)
+            currentUniversityCountry = await db
+              .collection("countries")
+              .findOne({
+                _id: new mongodb.ObjectID(currentUniversity.country),
+              });
           let currentUniversityColleges = [];
           for (let j = 0; j < currentUniversity.colleges.length; j++) {
             const currentCollegeID = currentUniversity.colleges[j];
@@ -109,9 +117,9 @@ async function handler(req, res) {
               .findOne({ _id: new mongodb.ObjectID(currentLanguageID) });
             currentUniversityLanguages.push(language);
           }
-          currentUniversity.state = currentUniversityState;
-          currentUniversity.area = currentUniversityArea;
-          currentUniversity.country = currentUniversityCountry;
+          currentUniversity.state = currentUniversityState || "";
+          currentUniversity.area = currentUniversityArea || "";
+          currentUniversity.country = currentUniversityCountry || "";
           currentUniversity.colleges = currentUniversityColleges;
           currentUniversity.specializations = currentUniversitySpecializations;
           currentUniversity.scientificDegrees =
