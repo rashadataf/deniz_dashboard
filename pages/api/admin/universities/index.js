@@ -60,7 +60,11 @@ apiRoute.post(async (req, res) => {
     let arTitle = req.body.arTitle;
     let establishmentYear = req.body.establishmentYear;
     let state = req.body.selectedState;
+    if (state === "0") state = "";
     let area = req.body.selectedArea;
+    if (area === "0") area = "";
+    let country = req.body.selectedCountry;
+    if (country === "0") country = "";
     let universityType = req.body.universityType;
     let address = req.body.address;
     let normalPrice = parseInt(req.body.normalPrice);
@@ -76,7 +80,6 @@ apiRoute.post(async (req, res) => {
     let specializations = JSON.parse(req.body.selectedSpecializations);
     let scientificDegrees = JSON.parse(req.body.selectedScientificDegrees);
     let programs = JSON.parse(req.body.selectedPrograms);
-    let country = req.body.selectedCountry;
     let languages = JSON.parse(req.body.selectedLanguages);
     const universities = db.collection("universities");
     const result = await universities.insertOne({

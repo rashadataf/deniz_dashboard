@@ -74,7 +74,6 @@ apiRoute.put(async (req, res) => {
   const {
     query: { id },
   } = req;
-  console.log("tam");
   try {
     let images = [];
     if (req.files && req.files.length > 0) {
@@ -85,8 +84,12 @@ apiRoute.put(async (req, res) => {
     let title = req.body.title;
     let arTitle = req.body.arTitle;
     let establishmentYear = req.body.establishmentYear;
+    let country = req.body.selectedCountry;
     let state = req.body.selectedState;
     let area = req.body.selectedArea;
+    if (state === "0") state = "";
+    if (area === "0") area = "";
+    if (country === "0") country = "";
     let universityType = req.body.universityType;
     let address = req.body.address;
     let normalPrice = parseInt(req.body.normalPrice);
@@ -102,7 +105,6 @@ apiRoute.put(async (req, res) => {
     let specializations = JSON.parse(req.body.selectedSpecializations);
     let scientificDegrees = JSON.parse(req.body.selectedScientificDegrees);
     let programs = JSON.parse(req.body.selectedPrograms);
-    let country = req.body.selectedCountry;
     let languages = JSON.parse(req.body.selectedLanguages);
     let oldImages = JSON.parse(req.body.oldImages);
 
@@ -136,7 +138,6 @@ apiRoute.put(async (req, res) => {
         }
       }
     }
-
     images = images.concat(oldImages);
 
     const result = await universities.updateOne(

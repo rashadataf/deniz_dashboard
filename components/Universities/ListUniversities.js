@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ListUniversities() {
+function ListUniversities({ url }) {
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
   const [blogs, setUniversities] = useState([]);
@@ -180,6 +180,7 @@ function ListUniversities() {
           <h2 id="simple-modal-title">Update University</h2>
           <div id="simple-modal-description">
             <University
+              url={url}
               title={university.title}
               arTitle={university.arTitle}
               establishmentYear={university.establishmentYear}

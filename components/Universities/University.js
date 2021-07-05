@@ -138,7 +138,7 @@ class NewUniversity extends React.Component {
     oldImages: this.props.images || [],
     images: [],
     imagesPreviews:
-      this.props.images.map((img) => `http://localhost:3000/${img}`) || [],
+      this.props.images.map((img) => `${this.props.url}/${img}`) || [],
     editorState:
       this.props.description === ""
         ? EditorState.createEmpty()

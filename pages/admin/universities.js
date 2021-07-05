@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Universities() {
+function Universities({ url }) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -71,7 +71,7 @@ function Universities() {
         <Tab icon={<AddIcon />} label="Add New" {...a11yProps(1)} />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <ListUniversities />
+        <ListUniversities url={url} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <NewUniversity handleChange={handleChange} />
@@ -83,3 +83,12 @@ function Universities() {
 Universities.layout = Admin;
 
 export default Universities;
+
+export async function getStaticProps(context) {
+  const url = process.env.URL;
+  return {
+    props: {
+      url,
+    }, // will be passed to the page component as props
+  };
+}

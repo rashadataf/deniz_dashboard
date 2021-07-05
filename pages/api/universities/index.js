@@ -24,13 +24,16 @@ async function handler(req, res) {
         .collection("universities")
         .find(query)
         .toArray();
-
       const result = [];
       for (let i = 0; i < universities.length; i++) {
         let currentUniversity = universities[i];
         let currentUniversityState;
         let currentUniversityArea;
         let currentUniversityCountry;
+        if (currentUniversity.country && currentUniversity.country.length > 0)
+          currentUniversityCountry = await db
+            .collection("countries")
+            .findOne({ _id: new mongodb.ObjectID(currentUniversity.country) });
         if (currentUniversity.state && currentUniversity.state.length > 0)
           currentUniversityState = await db
             .collection("states")
@@ -39,10 +42,6 @@ async function handler(req, res) {
           currentUniversityArea = await db
             .collection("areas")
             .findOne({ _id: new mongodb.ObjectID(currentUniversity.area) });
-        if (currentUniversity.country && currentUniversity.country.length > 0)
-          currentUniversityCountry = await db
-            .collection("countries")
-            .findOne({ _id: new mongodb.ObjectID(currentUniversity.country) });
         let currentUniversityColleges = [];
         for (let j = 0; j < currentUniversity.colleges.length; j++) {
           const currentCollegeID = currentUniversity.colleges[j];
