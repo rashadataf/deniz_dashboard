@@ -34,7 +34,8 @@ async function handler(req, res) {
         if (specialization && specialization.length > 0)
           query.specializations = { $in: [specialization] };
 
-        if (language && language.length) query.language = { $in: [language] };
+        if (language && language.length > 0)
+          query.languages = { $in: [language] };
         if (from && from.length > 0) {
           let lowPrice = parseInt(from);
           if (isNaN(lowPrice))

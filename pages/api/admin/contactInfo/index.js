@@ -28,14 +28,14 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "POST" || req.method === "post") {
     try {
-      const email = req.body.email;
-      const phone = req.body.phone;
-      const fax = req.body.fax;
-      const whatsapp = req.body.whatsapp;
-      const facebook = req.body.facebook;
-      const twitter = req.body.twitter;
-      const youtube = req.body.youtube;
-      const linkedin = req.body.linkedin;
+      const email = req.body.email || "";
+      const phone = req.body.phone || "";
+      const fax = req.body.fax || "";
+      const whatsapp = req.body.whatsapp || "";
+      const facebook = req.body.facebook || "";
+      const twitter = req.body.twitter || "";
+      const youtube = req.body.youtube || "";
+      const linkedin = req.body.linkedin || "";
       const { client, db } = await connectToDatabase();
       const contactInfo = db.collection("contactInfo");
       const oldContactInfo = await contactInfo.find({}).toArray();

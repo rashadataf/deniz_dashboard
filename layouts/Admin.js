@@ -91,7 +91,6 @@ export default function Admin({ children, ...rest }) {
           ) : (
             <div className={classes.map}>{children}</div>
           )}
-          {getRoute() ? <Footer /> : null}
         </div>
       </div>
     );
